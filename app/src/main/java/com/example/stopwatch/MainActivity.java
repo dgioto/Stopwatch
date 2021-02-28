@@ -1,5 +1,6 @@
 package com.example.stopwatch;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -13,13 +14,45 @@ public class MainActivity extends AppCompatActivity {
 
     private int seconds = 0;
     private boolean running;
+    //переменная для проверки, работал ли секундомер перед вызовом метода onStop()
+    private  boolean wasRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //сохраняем переменные в объект Bundle
+        if (savedInstanceState != null){
+            seconds = savedInstanceState.getInt("seconds");
+            running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
+        }
+
         runTimer();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putBoolean("running", running);
+        savedInstanceState.putBoolean("wasRunning", wasRunning);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //сохранить информацию о томб работал ли секундомер на момент вызова метода onStop()
+        wasRunning = running;
+        running = false;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //если секундомер работал, то отсчет вреени возобновляется
+        if (wasRunning) running = true;
     }
 
     public void onClickStart(View view){
