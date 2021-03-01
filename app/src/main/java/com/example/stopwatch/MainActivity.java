@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         runTimer();
     }
 
+    //сохранить состояние секундомера, если он готовится к уничтожению
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -40,18 +41,37 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putBoolean("wasRunning", wasRunning);
     }
 
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        //сохранить информацию о томб работал ли секундомер на момент вызова метода onStop()
+//        wasRunning = running;
+//        running = false;
+//    }
+
+    // переносим код в метод onPause() из onStop(), что бы секундомер приостановливал
+    // работу во время сварачивания приложения и приостановки
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         //сохранить информацию о томб работал ли секундомер на момент вызова метода onStop()
         wasRunning = running;
         running = false;
     }
 
+    //    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        //если секундомер работал, то отсчет времени возобновляется
+//        if (wasRunning) running = true;
+//    }
+
+    // переносим код в метод onResume() из onStart(), что бы секундомер приостановливал
+    // работу во время сварачивания приложения и приостановки
     @Override
-    protected void onStart() {
-        super.onStart();
-        //если секундомер работал, то отсчет вреени возобновляется
+    protected void onResume() {
+        super.onResume();
+        //если секундомер работал, то отсчет времени возобновляется
         if (wasRunning) running = true;
     }
 
